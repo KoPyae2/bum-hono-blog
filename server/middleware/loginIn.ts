@@ -1,4 +1,4 @@
-import type { Context } from "@/contex";
+import type { Context } from "@/context";
 import { createMiddleware } from "hono/factory";
 import { HTTPException } from "hono/http-exception";
 

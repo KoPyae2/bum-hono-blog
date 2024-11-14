@@ -1,10 +1,12 @@
-import type { ErrorResponse } from "@/client/types";
 import { Hono } from "hono";
 import { cors } from "hono/cors";
 import { HTTPException } from "hono/http-exception";
 import { lucia } from "./lucia";
-import type { Context } from "./contex";
 import { authRouter } from "./routes/auth";
+import { postRouter } from "./routes/posts";
+import { commentsRouter } from "./routes/comments";
+import type { Context } from "./context";
+import type { ErrorResponse } from "@/share/types";
 
 const app = new Hono<Context>();
 
@@ -32,7 +34,12 @@ app.use("*", cors(), async (c, next) => {
   return next();
 });
 
-const routes = app.basePath("/api").route('/auth', authRouter);
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const routes = app
+  .basePath("/api")
+  .route('/auth', authRouter)
+  .route('/posts', postRouter)
+  .route("/comments", commentsRouter);
 
 
 app.onError((err, c) => {
@@ -65,5 +72,11 @@ app.onError((err, c) => {
   );
 });
 
-export default app;
+export default {
+  port: process.env["PORT"] || 1000,
+  hostname: "0.0.0.0",
+  fetch: app.fetch,
+};
+
+console.log("Server Running on port", process.env["PORT"] || 3000);
 export type ApiRoutes = typeof routes;

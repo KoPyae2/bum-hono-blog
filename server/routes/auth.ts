@@ -1,6 +1,6 @@
 import { db } from "@/adapter";
-import { loginSchema, type SuccessResponse } from "@/client/types";
-import type { Context } from "@/contex";
+import { loginSchema, type SuccessResponse } from "@/share/types";
+import type { Context } from "@/context";
 import { userTable } from "@/db/schemas/auth";
 import { lucia } from "@/lucia";
 import { loggedIn } from "@/middleware/loginIn";
@@ -98,9 +98,9 @@ export const authRouter = new Hono<Context>()
     })
     .get("/user", loggedIn, async (c) => {
         const user = c.get("user")!;
-        return c.json<SuccessResponse<{ username: string }>>({
-          success: true,
-          message: "User fetched",
-          data: { username: user.username },
+        return c.json<SuccessResponse<{ username: string,id:string }>>({
+            success: true,
+            message: "User fetched",
+            data: { username: user.username, id: user.id },
         });
-      });
+    });
